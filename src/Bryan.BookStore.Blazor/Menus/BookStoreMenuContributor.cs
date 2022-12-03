@@ -50,6 +50,13 @@ public class BookStoreMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                "Palindrome",
+                l["Menu:Palindrome"],
+                url: "/palindrome"
+                ));
+
         if (await context.IsGrantedAsync(BookStorePermissions.Authors.Default))
         {
             context.Menu.Items
