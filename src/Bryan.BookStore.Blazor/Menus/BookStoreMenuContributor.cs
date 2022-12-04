@@ -54,6 +54,7 @@ public class BookStoreMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 "Palindrome",
                 l["Menu:Palindrome"],
+                icon: "fa fa-stream",
                 url: "/palindrome"
                 ));
 
