@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 
 namespace Bryan.BookStore.Books
