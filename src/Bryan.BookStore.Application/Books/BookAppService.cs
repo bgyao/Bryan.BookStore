@@ -12,7 +12,6 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Bryan.BookStore.Books
 {
-    [Authorize(BookStorePermissions.Books.Default)]
     public class BookAppService :
         CrudAppService<
             Book,
