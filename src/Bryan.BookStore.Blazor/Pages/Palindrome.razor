@@ -1,0 +1,107 @@
+﻿@page "/palindrome"
+@using System
+@using System.Collections
+@using System.Linq
+@using System.Collections.Generic
+
+<Layout>
+	<LayoutHeader>
+		<Heading Size="HeadingSize.Is3">Palindrome Generator</Heading>
+	</LayoutHeader>
+
+	<LayoutContent>
+
+		<TextEdit Text="@inputText" TextChanged="@GeneratePalindromes" Placeholder="Type a word or letters here..." />
+
+		<Divider DividerType="DividerType.Dashed" />
+
+		<Paragraph>All possible palindromes for @inputText:</Paragraph>
+
+		<ListGroup Flush>
+			@foreach (var palindrome in palindromes)
+			{
+				<ListGroupItem>@palindrome</ListGroupItem>
+			}
+		</ListGroup>
+	</LayoutContent>
+</Layout>
+
+
+@code {
+	private string inputText = "";
+	private List<string> palindromes = new List<string>();
+
+	public ArrayList PalindromeCreator(string userInput)
+	{
+		int strLength = userInput.Length; //get number of characters existing in userInput
+		char[] charList = userInput.Trim().ToCharArray(); //places each character in an array and removes empty spaces
+		var allPalindromes = new HashSet<string>[strLength, strLength]; 
+
+		//place all characters in a HashSet + initialize for use
+		for (int i = 0; i < strLength; i++)
+		{
+			allPalindromes[i, i] = new HashSet<string>();
+			allPalindromes[i, i].Add(charList[i].ToString());
+			allPalindromes[i, i].Add("");
+		}
+
+		//create another HashSet + initialize for use
+		for (int i = 1; i < strLength; i++)
+		{
+			allPalindromes[i, i - 1] = new HashSet<string>();
+			allPalindromes[i, i - 1].Add("");
+		}
+
+		//generate all palindromes possible, duplicates included
+		for (int j = 1; j < strLength; j++)
+		{
+			for (int i = j - 1; i >= 0; i--)
+			{
+				allPalindromes[i, j] = new HashSet<string>();
+
+				//j has the palindrome, therefore add those to the new HashSet
+				foreach (var p in allPalindromes[i, j - 1]) allPalindromes[i, j].Add(p);
+				foreach (var p in allPalindromes[i + 1, j]) allPalindromes[i, j].Add(p);
+				foreach (var p in allPalindromes[i + 1, j - 1]) allPalindromes[i, j].Add(p);
+
+				if (charList[i] == charList[j])
+				{
+					foreach (var p in allPalindromes[i + 1, j - 1])
+					{
+						//checking if palindrome does NOT contain space AND is NOT the same with charList[i].
+						// if any is true, continue palindrome generation.
+						if (p != "" && charList[i].ToString()!= p)
+						{
+							string concatPalindrome = charList[i].ToString() + p + charList[j].ToString();
+							allPalindromes[i, j].Add(concatPalindrome);
+						}
+					}
+				}
+			}
+		}
+
+		allPalindromes[0, strLength - 1].Remove(""); //removes all empty spaces/null in the HashSet
+		return new ArrayList(allPalindromes[0, strLength - 1].ToList()); //dumps into a new ArrayList unique instances from the HashSet
+	}
+
+	Task GeneratePalindromes(string input)
+	{
+		inputText = input;
+
+		//checks if user entered a space or nothing
+		if (input.Length == 0 || input.IsNullOrWhiteSpace())
+		{
+			Console.WriteLine("Enter characters only");
+			return Task.CompletedTask;
+		}
+		palindromes = new(); //initializes List palindromes
+								//creates all possible palindromes
+		foreach (var palindrome in PalindromeCreator(input))
+		{
+			palindromes.Add((string)palindrome);
+		}
+		StateHasChanged(); //alerts system that user made changes
+
+		return Task.CompletedTask;
+	}
+}
